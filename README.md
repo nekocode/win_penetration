@@ -15,5 +15,5 @@ powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](http
 
 ### todo
 - [ ] rewrite build script by using python lang
-- [ ] rookit (DLL inject)
+- [ ] rookit (Invoke-ReflectivePEInjection)
 - [ ] auto-run with high authority

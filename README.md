@@ -14,6 +14,7 @@ powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](http
 	- run PowerShellTcp listenning on 192.168.10.99:8099
 
 ### todo
+- [x] fetch attacker's ip&port on remote server
 - [ ] rewrite build script by using python lang
 - [ ] rookit (Invoke-ReflectivePEInjection)
 - [ ] auto-run with high authority

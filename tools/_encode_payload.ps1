@@ -142,4 +142,4 @@ https://github.com/samratashok/nishang
     }
 }
 
-Invoke-Encode -DataToEncode Payload.ps1 -OutputFilePath payload.txt
+Invoke-Encode -DataToEncode Payload.ps1 -OutputFilePath _payload.txt

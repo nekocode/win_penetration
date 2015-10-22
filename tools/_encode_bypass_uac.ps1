@@ -184,4 +184,4 @@ http://www.exploit-monday.com
 }
 
 
-Out-EncodedCommand -Path Bypass-UAC.ps1 -NonInteractive -NoProfile -WindowStyle Hidden -EncodedOutput > _bypass_uac.bat
+Out-EncodedCommand -Path Bypass-UAC.ps1 -NonInteractive -NoProfile -WindowStyle Hidden -EncodedOutput > _bypass_uac.txt

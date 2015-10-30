@@ -2,6 +2,9 @@
 
 powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](https://github.com/mattifestation/PowerSploit)
 
+### start  
+- run **`pack.bat`**
+
 ### main behaviour
 - bypass UAC and extract payload to tmp directory
 - run the payload script
@@ -19,12 +22,12 @@ powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](http
 ### todo
 - [x] download and excute exe
 - [x] fetch attacker's ip&port on remote server
-- [ ] rewrite build script by using python lang
+- [x] python pack helper
 - [ ] rookit (Invoke-ReflectivePEInjection)
 - [x] auto-run with high authority
 
 
-### command in common usage
+### usefull command
 ```
 # ftp download file
 

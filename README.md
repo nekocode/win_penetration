@@ -1,24 +1,15 @@
 # win_penetration
+Powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](https://github.com/mattifestation/PowerSploit)
 
-powered by [nishang](https://github.com/samratashok/nishang), [PowerSploit](https://github.com/mattifestation/PowerSploit)
+### Usage  
+- Run **`pack.bat`** on the target system(windows 7/8) to penetrant it
 
-### usage  
-- run **`pack.bat`**
-
-### main behaviour
-- bypass UAC and extract the payload to temp directory
-- excute the payload script
-    - add powershell root path to env path
-	- copy self to temp directory and powershell root directory
-    - turn off the LUA and firewall
-	- add persistence
-	- add self to windows autorun registry
-	- dump user's login password
-	- download and excute exe from remote server
-	- excute PowerShellTcp for listenning remote control
-	
-
-### todo
-- [x] python pack helper
-- [ ] rookit (Invoke-ReflectivePEInjection)
-- [x] auto-run with high authority
+### Behaviour
+- Bypass UAC
+- Extract the payload to them temp directory
+- Excute the payload script
+- Turn off the LUA and Firewall
+- Add Persistence, Installing into autorun
+- Catch user's login password
+- Download and excute exe file from remote server
+- Excute PowerShellTcp for remote controlling
